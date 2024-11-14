@@ -201,10 +201,9 @@ private:
 template <typename ValueType>
 void apply(std::shared_ptr<const DefaultExecutor> exec,
            const settings<remove_complex<ValueType>>& settings,
-           const batch::BatchLinOp* const mat,
-           const batch::BatchLinOp* const precon,
-           const batch::MultiVector<ValueType>* const b,
-           batch::MultiVector<ValueType>* const x,
+           const batch::BatchLinOp* mat, const batch::BatchLinOp* precon,
+           const batch::MultiVector<ValueType>* b,
+           batch::MultiVector<ValueType>* x,
            batch::log::detail::log_data<remove_complex<ValueType>>& logdata)
 {
     using hip_value_type = hip_type<ValueType>;
