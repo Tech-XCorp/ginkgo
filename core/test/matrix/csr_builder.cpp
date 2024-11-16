@@ -59,7 +59,9 @@ TYPED_TEST(CsrBuilder, UpdatesSrowOnDestruction)
     using value_type = typename TestFixture::value_type;
     using index_type = typename TestFixture::index_type;
     struct mock_strategy : public Mtx::strategy_type {
+#if !defined(__clang__) && !defined(__GNUC__)
         using Mtx = Mtx;
+#endif
         virtual void process(const gko::array<index_type>&,
                              gko::array<index_type>*) override
         {
