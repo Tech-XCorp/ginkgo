@@ -2534,9 +2534,9 @@ void spgemm(std::shared_ptr<const DefaultExecutor> exec,
 
     catch (const CusparseError& cse) {
         // If estimated buffer size is too large and CUDA > 12.0,  fall back to
-        // ALG2
+        // ALG3 with chunk fraction 0.1
 #if CUDA_VERSION >= 12000
-        spgemm_alg = CUSPARSE_SPGEMM_ALG2;
+        spgemm_alg = CUSPARSE_SPGEMM_ALG3;
         // Memory estimate for Alg2/Alg3
         sparselib::spgemm_work_estimation(handle, &alpha, a_descr, b_descr,
                                           &beta, c_descr, spgemm_descr,
@@ -2548,11 +2548,11 @@ void spgemm(std::shared_ptr<const DefaultExecutor> exec,
         size_type buffer3_size{};
         sparselib::spgemm_estimate_memory(
             handle, &alpha, a_descr, b_descr, &beta, c_descr, spgemm_descr,
-            spgemm_alg, 1.0f, buffer3_size, nullptr, nullptr);
+            spgemm_alg, 0.1f, buffer3_size, nullptr, nullptr);
         array<char> buffer3{exec, buffer3_size};
         sparselib::spgemm_estimate_memory(
             handle, &alpha, a_descr, b_descr, &beta, c_descr, spgemm_descr,
-            spgemm_alg, 1.0f, buffer3_size, buffer3.get_data(), &buffer2_size);
+            spgemm_alg, 0.1f, buffer3_size, buffer3.get_data(), &buffer2_size);
         buffer2.resize_and_reset(buffer2_size);
         // compute spgemm
         sparselib::spgemm_compute(
@@ -2741,7 +2741,7 @@ void advanced_spgemm(std::shared_ptr<const DefaultExecutor> exec,
 
     catch (const CusparseError& cse) {
         // If estimated buffer size is too large and CUDA > 12.0,  fall back to
-        // ALG2
+        // ALG3
 #if CUDA_VERSION >= 12000
         spgemm_alg = CUSPARSE_SPGEMM_ALG2;
         // Memory estimate for Alg2/Alg3
